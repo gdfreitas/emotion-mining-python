@@ -174,6 +174,26 @@ Atributo meta (classe): comprar.
   - Fase 1: uma imagem do Homer Simpson e do Bart Simpson > extração de características (cores de roupas, pele, cabelo, etc) > algoritmo de aprendizagem (supervisor) > modelo aprendido.
   - Fase 2: imagem do Bart Simpson > extração de caraterísticas > modelo aprendido > Bart Simpson;
 
+##### Classificação em textos
+
+| Frase                      | Classe  |
+|----------------------------|---------|
+|Me sinto completamente amado| Alegria |
+|Eu estou muito bem hoje     | Alegria |
+|Isso me deixa apavorada     | Medo    |
+|Este lugar é apavorante     | Medo    |
+
+Como ficaria uma base de dados da classificação acima:
+
+Todas as características (atributos previsores) estão dispostas nas colunas, eliminando duplicidades, eliminando stop words (Ex: "é"). É comum em uma base real de trabalho possuir mais de 70.000 características.
+
+| Me | Sinto | Completamente | Amado | Eu | Estou | Muito | Bem | Hoje | Isso | Deixa | Apavorada | Este | Lugar | Apavorante |  Classe |
+|:--:|:-----:|:-------------:|:-----:|:--:|:-----:|:-----:|:---:|:----:|:----:|:-----:|:---------:|:----:|:-----:|:----------:|:-------:|
+|  S |   S   |       S       |   S   |  N |   N   |   N   |  N  |   N  |   N  |   N   |     N     |   N  |   N   |      N     | Alegria |
+|  N |   N   |       N       |   N   |  S |   S   |   S   |  S  |   S  |   N  |   N   |     N     |   N  |   N   |      N     | Alegria |
+|  S |   N   |       N       |   N   |  N |   N   |   N   |  N  |   N  |   S  |   S   |     S     |   N  |   N   |      N     |   Medo  |
+|  N |   N   |       N       |   N   |  N |   N   |   N   |  N  |   N  |   N  |   N   |     N     |   S  |   S   |      S     |   Medo  |
+
 ---
 
 ### 2. Pré-processamento dos textos
