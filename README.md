@@ -96,6 +96,76 @@ Documento 2: "Não aconteceu nenhum **gol** por conta de ..."
 - Classificação por polaridade (valência): submeter um texto em um algoritmo: "Positivo", "Neutro" e "Negativo"
 - Classificação por emoção (6 bases): Supresa, Alegria, Tristeza, Medo, Disgosto e Raiva _(segundo estudo do Paul Ekman)_
 
+#### Classificação
+
+- Cada registro pertence a uma classe que possui um conjunto de atributos previsores;
+- Objetiva-se descobrir um relacionamento entre os atributos previsores e o atributo meta;
+- O valor do atributo meta é conhecido através de aprendizagem superviosionada;
+
+##### Tabela de treinamento (Classificação de risco de crédito)
+
+Atributos previsores: histórica do crédito, divida, garantias, renda anual;  
+Atributo meta (classe): risco.
+
+| História do crédito | Dívida | Garantias | Renda anual           | Risco    |
+|---------------------|--------|-----------|-----------------------|----------|
+| Ruim                | Alta   | Nenhuma   | < 15.000              | Alto     |
+| Desconhecida        | Alta   | Nenhuma   | >= 15.000 a <= 35.000 | Alto     |
+| Desconhecida        | Baixa  | Nenhuma   | >= 15.000 a <= 35.000 | Moderado |
+| Desconhecida        | Baixa  | Nenhuma   | < 15.000              | Alto     |
+| Desconhecida        | Baixa  | Nenhuma   | > 35.000              | Baixo    |
+| Desconhecida        | Baixa  | Adequada  | > 35.000              | Baixo    |
+| Ruim                | Baixa  | Nenhuma   | < 15.000              | Alto     |
+| Ruim                | Baixa  | Adequada  | > 35.000              | Moderado |
+| Boa                 | Baixa  | Nenhuma   | > 35.000              | Baixo    |
+| Boa                 | Alta   | Adequada  | > 35.000              | Baixo    |
+| Boa                 | Alta   | Nenhuma   | < 15.000              | Alto     |
+| Boa                 | Alta   | Nenhuma   | >= 15.000 a <= 35.000 | Moderado |
+| Boa                 | Alta   | Nenhuma   | > 35.0000             | Baixo    |
+| Ruim                | Alta   | Nenhuma   | >= 15.000 a <= 35.000 | Alto     |
+
+##### Tabela de testes (Classificação de risco de crédito)
+
+| História do crédito | Dívida | Garantias | Renda anual           |
+|---------------------|--------|-----------|-----------------------|
+| Ruim                | Alta   | Adequada  | < 15.000              |
+| Desconhecida        | Alta   | Adequada  | < 15.000              |
+| Desconhecida        | Baixa  | Nenhuma   | > 35.000              |
+| Boa                 | Alta   | Adequada  | >= 15.000 a <= 35.000 |
+
+##### Tabela de treinamento (Classificação de vendas de livros)
+
+Atributos previsores: sexo, país, idade;  
+Atributo meta (classe): comprar.
+
+| Sexo | País       | Idade | Comprar |
+|------|------------|-------|---------|
+| M    | França     | 25    | Sim     |
+| M    | Inglaterra | 21    | Sim     |
+| F    | França     | 23    | Sim     |
+| F    | Inglaterra | 34    | Sim     |
+| F    | França     | 30    | Não     |
+| M    | Alemanha   | 21    | Não     |
+| M    | Alemanha   | 20    | Não     |
+| F    | Alemanha   | 18    | Não     |
+| F    | França     | 34    | Não     |
+| F    | França     | 34    | Não     |
+| M    | França     | 55    | Não     |
+| M    | Inglaterra | 25    | Sim     |
+| M    | Alemanha   | 48    | Sim     |
+| F    | Inglaterra | 23    | Não     |
+
+##### Tabela de testes (Classificação de vendas de livros)
+
+| Sexo | País       | Idade |
+|------|------------|-------|
+| M    | França     | 38    |
+| F    | Inglaterra | 25    |
+| M    | Alemanha   | 55    |
+| F    | França     | 20    |
+
+
+
 ---
 
 ### 2. Pré-processamento dos textos
@@ -125,3 +195,5 @@ _Sem conteúdo ainda_.
 ## Referências
 
 - [Mineração de Emoção em Textos com Python e NLKT @ Udemy](https://www.udemy.com/mineracao-de-emocao-em-textos-com-python-e-nltk)
+
+- [Markdown Table Generator](https://www.tablesgenerator.com/markdown_tables)
