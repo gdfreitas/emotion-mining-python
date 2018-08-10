@@ -164,7 +164,15 @@ Atributo meta (classe): comprar.
 | M    | Alemanha   | 55    |
 | F    | França     | 20    |
 
+##### Representação da classificação
 
+- Método indutivo:
+  - Fase 1: conjunto de exemplos + atributos previsores + atributo meta > sistema de aprendizado (algoritmos) > gera um classificador (modelo).
+  - Fase 2: caso a ser classificado (atributo meta não conhecido) > classificador > decisão.
+
+- Aprendizagem supervisionada (indução):
+  - Fase 1: uma imagem do Homer Simpson e do Bart Simpson > extração de características (cores de roupas, pele, cabelo, etc) > algoritmo de aprendizagem (supervisor) > modelo aprendido.
+  - Fase 2: imagem do Bart Simpson > extração de caraterísticas > modelo aprendido > Bart Simpson;
 
 ---
 
