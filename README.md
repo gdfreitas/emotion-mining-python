@@ -87,6 +87,15 @@ Documento 2: "Não aconteceu nenhum **gol** por conta de ..."
   - Interpretação sintática e semântica das frases;
   - Fazer o computador entender textos escritos em linguagem humana.
 
+#### Mineração de emoção
+
+- Classificação: aplicar algoritmo em texto e extrair as emoções: "Alegria", "Tristeza", "Medo", etc;
+- Monitoramento de marcas, entidades, figuras sociais;
+- Gestão de crises;
+- Entender o que as pessoas pensam;
+- Classificação por polaridade (valência): submeter um texto em um algoritmo: "Positivo", "Neutro" e "Negativo"
+- Classificação por emoção (6 bases): Supresa, Alegria, Tristeza, Medo, Disgosto e Raiva _(segundo estudo do Paul Ekman)_
+
 ---
 
 ### 2. Pré-processamento dos textos
