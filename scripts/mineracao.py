@@ -40,3 +40,14 @@ def remove_stop_words(text):
    return frases
 
 print(remove_stop_words(base))
+print('\n')
+
+def apply_stemmer(text):
+   stemmer = nltk.stem.RSLPStemmer()
+   frases = []
+   for (palavras, emocao) in text:
+      com_stemming = [str(stemmer.stem(p)) for p in palavras.split() if p not in stop_words_nltk] # aplica o stemming nas palavras da frase e desconsidera as stop_words
+      frases.append((com_stemming, emocao))
+   return frases
+
+print(apply_stemmer(base))

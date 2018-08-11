@@ -212,6 +212,8 @@ Instalar libs:
 `./easy_install.exe nltk`  
 `./easy_install.exe numpy`
 
+Exemplos práticos em no diretório `./scripts`
+
 ---
 
 ## 3. Detectando emoções em textos com Naive Bayes
@@ -241,5 +243,9 @@ _Sem conteúdo ainda_.
 - [NLTK em Português](http://www.nltk.org/howto/portuguese_en.html)
 
 - [Penn Part of Speech Tags](https://cs.nyu.edu/grishman/jet/guide/PennPOS.html)
+
+- [Estrutura e formação de palavras - Raiz e radical](https://www.soportugues.com.br/secoes/morf/morf2.php)
+
+- [Stemming words with NLTK](https://pythonprogramming.net/stemming-nltk-tutorial/)
 
 - [Markdown Table Generator](https://www.tablesgenerator.com/markdown_tables)
