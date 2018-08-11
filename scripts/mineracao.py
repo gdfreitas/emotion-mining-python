@@ -39,8 +39,8 @@ def remove_stop_words(text):
       frases.append((sem_stop, emocao))
    return frases
 
-print(remove_stop_words(base))
-print('\n')
+#print(remove_stop_words(base))
+#print('\n')
 
 def apply_stemmer(text):
    stemmer = nltk.stem.RSLPStemmer()
@@ -50,4 +50,25 @@ def apply_stemmer(text):
       frases.append((com_stemming, emocao))
    return frases
 
-print(apply_stemmer(base))
+frases_stemming = apply_stemmer(base)
+#print(apply_stemmer(base))
+
+def find_words(frases):
+   all_words = []
+   for (palavras, emocao) in frases:
+      all_words.extend(palavras)
+   return all_words
+
+palavras = find_words(frases_stemming) 
+
+def find_frequency(palavras):
+   return nltk.FreqDist(palavras)
+
+frequencia = find_frequency(palavras)
+# print(frequencia.most_common(50))
+
+def find_unique_words(frequency):
+   return frequency.keys()
+
+unique_words = find_unique_words(frequencia)
+print(unique_words)
