@@ -214,13 +214,22 @@ Instalar libs:
 
 Exemplos práticos em no diretório `./scripts`
 
----
-
 ## 3. Detectando emoções em textos com Naive Bayes
 
-_Sem conteúdo ainda_.
+- "Naive Bayes" é um algoritmo baseado em probabilidade e estatística muito utilizado para tarefas de mineração de textos;
+- Classificação de textos com "Naive Bayes" e NLTK;
 
----
+- Abordagem probabilística (Teorema de Bayes)
+- Exemplos de aplicação do algoritmo:
+  - Filtros de spam em e-mails;
+  - Mineração de emoções (Computação Afetiva);
+  - Separação de documentos;
+
+- `Base de dados original > Treinamento/Aprendizagem do Algoritmo Naive Bayes > Tabela de probabilidade`
+
+- Criar tabela de probabilidade manual com base no exemplo do **risco de crédito**:
+
+![Tabela de probabilidade - Risco de crédito](https://i.imgur.com/LnvhB7m.png)
 
 ## 4. Avaliação do algoritmo
 
