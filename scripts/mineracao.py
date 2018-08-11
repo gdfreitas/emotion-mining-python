@@ -23,4 +23,20 @@ base = [
    ('estou com medo do resultado dos meus testes', 'medo')
 ]
 
-print(base)
+stop_words = [
+   'a', 'agora', 'algum', 'alguma', 'aquele', 'aqueles', 'de', 'deu', 'do', 'e', 'estou', 'esta', 'esta',
+   'ir', 'meu', 'muito', 'mesmo', 'no', 'nossa', 'o', 'outro', 'para', 'que', 'sem', 'talvez', 'tem', 'tendo',
+   'tenha', 'teve', 'tive', 'todo', 'um', 'uma', 'umas', 'uns', 'vou'
+]
+
+stop_words_nltk = nltk.corpus.stopwords.words('portuguese')
+# print(stop_words_nltk)
+
+def remove_stop_words(text):
+   frases = []
+   for (palavras, emocao) in text:
+      sem_stop = [p for p in palavras.split() if p not in stop_words_nltk] # faz o split da frase em palavras e e desconsidera as stop_words
+      frases.append((sem_stop, emocao))
+   return frases
+
+print(remove_stop_words(base))
