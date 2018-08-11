@@ -71,4 +71,17 @@ def find_unique_words(frequency):
    return frequency.keys()
 
 unique_words = find_unique_words(frequencia)
-print(unique_words)
+# print(unique_words)
+
+def words_extractor(documento):
+   doc = set(documento)
+   caracteristicas = {}
+   for word in unique_words:
+      caracteristicas['%s' % word] = (word in doc)
+   return caracteristicas
+
+caracteristicas = words_extractor(['am', 'nov', 'dia'])
+# print(caracteristicas)
+
+base_completa = nltk.classify.apply_features(words_extractor, frases_stemming)
+print(base_completa)
