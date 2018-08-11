@@ -1,5 +1,6 @@
 import nltk
 
+## Base de dados original
 base = [
    ('eu sou admirada por muitos','alegria'),
    ('me sinto completamente amado','alegria'),
@@ -30,8 +31,8 @@ stop_words = [
 ]
 
 stop_words_nltk = nltk.corpus.stopwords.words('portuguese')
-# print(stop_words_nltk)
 
+# Método para remover as stop words que são palavras que não possuem relevância para o entendimento do contexto, se é uma emoção de alegria ou de medo.
 def remove_stop_words(text):
    frases = []
    for (palavras, emocao) in text:
@@ -39,11 +40,9 @@ def remove_stop_words(text):
       frases.append((sem_stop, emocao))
    return frases
 
-#print(remove_stop_words(base))
-#print('\n')
-
+# Método para remover o radical das palavras
 def apply_stemmer(text):
-   stemmer = nltk.stem.RSLPStemmer()
+   stemmer = nltk.stem.RSLPStemmer() # stemmer usado com a linguagem português
    frases = []
    for (palavras, emocao) in text:
       com_stemming = [str(stemmer.stem(p)) for p in palavras.split() if p not in stop_words_nltk] # aplica o stemming nas palavras da frase e desconsidera as stop_words
@@ -51,8 +50,8 @@ def apply_stemmer(text):
    return frases
 
 frases_stemming = apply_stemmer(base)
-#print(apply_stemmer(base))
 
+# Método para buscar todas as palavras que existem na base de dados
 def find_words(frases):
    all_words = []
    for (palavras, emocao) in frases:
@@ -61,18 +60,19 @@ def find_words(frases):
 
 palavras = find_words(frases_stemming) 
 
+# Método para buscar a frequência das palavras
 def find_frequency(palavras):
    return nltk.FreqDist(palavras)
 
 frequencia = find_frequency(palavras)
-# print(frequencia.most_common(50))
 
+# Método para encontrar as palavras únicas conforme a frequência
 def find_unique_words(frequency):
    return frequency.keys()
 
 unique_words = find_unique_words(frequencia)
-# print(unique_words)
 
+# Método para verificar se as palavras do parâmetro existem ou não na unique_words
 def words_extractor(documento):
    doc = set(documento)
    caracteristicas = {}
@@ -81,7 +81,7 @@ def words_extractor(documento):
    return caracteristicas
 
 caracteristicas = words_extractor(['am', 'nov', 'dia'])
-# print(caracteristicas)
 
+# Aplica classificador com base nos métodos implementados anteriores
 base_completa = nltk.classify.apply_features(words_extractor, frases_stemming)
 print(base_completa)
