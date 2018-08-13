@@ -84,4 +84,12 @@ caracteristicas = words_extractor(['am', 'nov', 'dia'])
 
 # Aplica classificador com base nos métodos implementados anteriores
 base_completa = nltk.classify.apply_features(words_extractor, frases_stemming)
-print(base_completa)
+
+# Constrói a tabela de probabilidade
+classificador = nltk.NaiveBayesClassifier.train(base_completa)
+
+# Exibe os rótulos/classes
+print(classificador.labels())
+
+# Exibe as 5 palavras mais informativas e sua probabilidade em relação aos rótulos
+print(classificador.show_most_informative_features(5))
