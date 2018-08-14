@@ -49,6 +49,15 @@ def apply_stemmer(text):
       frases.append((com_stemming, emocao))
    return frases
 
+def apply_stemmer_phrase_only(text):
+   stemmer = nltk.stem.RSLPStemmer() # stemmer usado com a linguagem português
+   palavras_result = []
+   for (palavras) in text.split():
+      com_stemming = [str(stemmer.stem(p)) for p in palavras.split() if p not in stop_words_nltk] # aplica o stemming nas palavras da frase e desconsidera as stop_words
+      if (com_stemming):
+         palavras_result.append(str(com_stemming[0]))
+   return palavras_result
+
 frases_stemming = apply_stemmer(base)
 
 # Método para buscar todas as palavras que existem na base de dados
@@ -82,6 +91,11 @@ def words_extractor(documento):
 
 caracteristicas = words_extractor(['am', 'nov', 'dia'])
 
+def print_probabilidade_classificacao(tabela):
+   distribuicao = classificador.prob_classify(tabela)
+   for classe in distribuicao.samples():
+      print("%s: %f" % (classe, distribuicao.prob(classe)))
+
 # Aplica classificador com base nos métodos implementados anteriores
 base_completa = nltk.classify.apply_features(words_extractor, frases_stemming)
 
@@ -89,7 +103,20 @@ base_completa = nltk.classify.apply_features(words_extractor, frases_stemming)
 classificador = nltk.NaiveBayesClassifier.train(base_completa)
 
 # Exibe os rótulos/classes
-print(classificador.labels())
+# print(classificador.labels())
 
 # Exibe as 5 palavras mais informativas e sua probabilidade em relação aos rótulos
-print(classificador.show_most_informative_features(5))
+# print(classificador.show_most_informative_features(5))
+
+def apply_and_print_results(texto):
+   texto_stemmed = apply_stemmer_phrase_only(texto)
+   
+   tabela_probabilistica = words_extractor(texto_stemmed)
+   print("\nA frase \"%s\"" % texto, "foi classificada como:",  classificador.classify(tabela_probabilistica))
+   print(texto_stemmed)
+   print_probabilidade_classificacao(tabela_probabilistica)
+
+apply_and_print_results('estou com medo')
+apply_and_print_results('eu sinto amor por você')
+apply_and_print_results('hoje meu dia está feliz')
+apply_and_print_results('eu te amo')
