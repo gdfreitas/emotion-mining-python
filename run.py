@@ -2,31 +2,50 @@ import nltk
 import data
 import impl
 
-frases_com_stemming = impl.apply_stemmer(data.base_treinamento)
-palavras_com_stemming = impl.concat_words(frases_com_stemming)
-frequencias = impl.find_frequency(palavras_com_stemming)
-palavras_unicas = impl.find_unique_words(frequencias)
+frases_com_stemming_treinamento = impl.apply_stemmer(data.base_treinamento)
+frases_com_stemming_teste = impl.apply_stemmer(data.base_teste)
+
+palavras_com_stemming_treinamento = impl.concat_words(frases_com_stemming_treinamento)
+palavras_com_stemming_teste = impl.concat_words(frases_com_stemming_teste)
+
+frequencias_treinamento = impl.find_frequency(palavras_com_stemming_treinamento)
+frequencias_teste = impl.find_frequency(palavras_com_stemming_teste)
+
+palavras_unicas_treinamento = impl.find_unique_words(frequencias_treinamento)
+palavras_unicas_teste = impl.find_unique_words(frequencias_teste)
 
 # método para verificar se as palavras do documento do parâmetro está na lista de palavras únicas
-def words_extractor(documento):
+def words_extractor_treinamento(documento):
    doc = set(documento)
    caracteristicas = {}
-   for word in palavras_unicas:
+   for word in palavras_unicas_treinamento:
+      caracteristicas['%s' % word] = (word in doc)
+   return caracteristicas
+
+def words_extractor_teste(documento):
+   doc = set(documento)
+   caracteristicas = {}
+   for word in palavras_unicas_teste:
       caracteristicas['%s' % word] = (word in doc)
    return caracteristicas
 
 # Método aplica e imprime os resultados
 def apply_and_print_results(classificador, texto):
    documento = impl.apply_stemmer_text(texto)
-   tabela_probabilistica = words_extractor(documento)
+   tabela_probabilistica = words_extractor_treinamento(documento)
    print("\nA frase \"%s\"" % texto, "foi classificada como:",  classificador.classify(tabela_probabilistica))
    impl.print_probabilidade_classificacao(classificador, tabela_probabilistica)
 
 # aplica classificador com base nos métodos implementados anteriores
-base_completa = nltk.classify.apply_features(words_extractor, frases_com_stemming)
+base_completa_treinamento = nltk.classify.apply_features(words_extractor_treinamento, frases_com_stemming_treinamento)
+base_completa_teste = nltk.classify.apply_features(words_extractor_teste, frases_com_stemming_teste)
 
 # constrói a tabela de probabilidade
-classificador = nltk.NaiveBayesClassifier.train(base_completa)
+classificador = nltk.NaiveBayesClassifier.train(base_completa_treinamento)
+
+# exibe precisão do algoritmo
+# print(nltk.classify.accuracy(classificador, base_completa_treinamento))
+# print(nltk.classify.accuracy(classificador, base_completa_teste))
 
 # exibe os rótulos/classes
 # print(classificador.labels())
@@ -34,5 +53,14 @@ classificador = nltk.NaiveBayesClassifier.train(base_completa)
 # exibe as 5 palavras mais informativas e sua probabilidade em relação aos rótulos
 # print(classificador.show_most_informative_features(20))
 
-tabela_probabilistica = words_extractor('voce é muito bonita')
-impl.print_probabilidade_classificacao(classificador, tabela_probabilistica)
+# tabela_probabilistica = words_extractor_treinamento('voce é muito bonita')
+# impl.print_probabilidade_classificacao(classificador, tabela_probabilistica)
+
+# classifica e imprime os as classes classificadas erradas pelo algoritmo
+# impl.classify_and_test_accurary(classificador, base_completa_teste)
+# impl.classify_and_test_accurary(classificador, base_completa_treinamento)
+
+# imprime matriz de confusão, permite verificar os acertos por classe
+impl.print_confusion_matrix(classificador, base_completa_teste)
+
+# PERCENTUAL DE ACERTO = soma dos valores da diagonal principal divido pela soma de todos os valores

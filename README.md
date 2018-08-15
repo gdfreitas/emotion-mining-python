@@ -233,15 +233,15 @@ Exemplos práticos em no diretório `./scripts`
 
 ## 4. Avaliação do algoritmo
 
-_Sem conteúdo ainda_.
+Características para se levar em consideração antes do uso deste algorítmo:
 
----
+1. Cenário
+2. Número de classes
+3. "zero-rules" dependendo da aplicação este método é mais aplicável (classifica todas as frases com base na classe mais utilizada)
 
 ## 5. Considerações finais
 
 _Sem conteúdo ainda_.
-
----
 
 ## Referências
 
