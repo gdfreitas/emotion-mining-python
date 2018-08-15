@@ -236,7 +236,7 @@ Exemplos práticos em no diretório `./scripts`
 Características para se levar em consideração antes do uso deste algorítmo:
 
 1. Cenário
-2. Número de classes
+2. Número de classes (com as 6 emoções, o algoritmo alcançou acerto de 39%)
 3. "zero-rules" dependendo da aplicação este método é mais aplicável (classifica todas as frases com base na classe mais utilizada)
 
 ## 5. Considerações finais
