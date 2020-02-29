@@ -1,202 +1,195 @@
-# python-emotion-mining
+# emotion-mining-python
 
-Curso sobre mineração de emoção em textos utilizando a linguagem Python.
+Mineração de emoção em textos utilizando a linguagem Python.
 
-## Seções
+## Mineração de textos
 
-1. Mineração de textos e classificação
-2. Pré-processamento dos textos (stop words, stemming, etc)
-3. Detectando emoções em textos com Naive Bayes (NLTK - Natural Language Toolkit)
-4. Avaliação do algoritmo
-5. Considerações finais
+Atualmente temos inúmeras fontes de armazenamento de textos:
 
----
+- Livros
+- Jornais
+- Revistas
+- Páginas Web
+- Blogs
+- **Redes Sociais**
+- E-mails
+- Arquivos em PDF, XML e JSON
+- ... etc
 
-## 1. Mineração de textos e classificação
+Estas fontes são ricas para se encontrar e extrair padrões de textos.
 
-### Formas de armazenamento de textos
+Uma característica importante é que estes tipos de dados normalmente não possuem um esquema para descrever sua estrutura de armazenamento, eles estão armazenados em diversos formatos, o que dificulta a interpretação do dado.
 
-- Livros, jornais, revistas, páginas web, blogs, redes sociais, e-mails, PDF, XML e JSON, etc.
-- Geralmente não possuem um "esquema"  para descrever sua estrutura
-- Texto "livre" vs texto "formatado"
+Há basicamente dois tipos de textos
 
-#### Classificadores
+- **Formatado**: possuem _tags_ que definem onde que está o título, os autores, etc.
+  - Ex: Arquivo XML, JSON, HTML, etc
+- **Livre**: não possuem indicadores explícitos, estão num formato puro
+  - Ex: O corpo de um e-mail, uma postagem de rede social, etc.
 
-- mensagem (assunto, texto) &rarr; algoritmo classificador &rarr; classe da mensagem (normal, spam, etc)
+## Técnicas de Mineração de Textos
 
-- texto de notícia &rarr; algorítimo classificador multirrótulo &rarr; tópicos (esporte, rio de janeiro, economia)
+### Classificação
 
-### Agrupamentos _(Clustering)_
+É utilizada para reconhecer padrões que **descrevem** o grupo ao qual um determinado item pertence. Chega numa saída por meio do exame dos itens já classificados e pela inferência de um conjunto de regras.
 
-- IBGE na descoberta de bairros com nomes similares (`Jardim América` = `Jdim América`)
+#### Classificação Exemplo 1
 
-- Detecção de plágio
+Pode ser usado para **classificação de mensagens de spam** através mensagens recebidas em caixas de e-mails como Gmail, Outlook para determinar e-mails de spam
 
-### Extração de informação
+1. **Entrada**: Mensagem (assunto, texto)
+1. **Classificador**
+1. **Saída**: Classe da Mensagem (normal, spam, etc)
 
-Texto "livre" &rarr; `{ livro: "Utopia", ano: 1516, pais: "Brasil", autor: "Thomas More"}`
+#### Classificação Exemplo 2
 
-Utilização de ontologias, representando conceitos e relacionamentos em um determinado domínio
-`Livro { nome: "Utopia" }` é escrito por `Autor { nome: "Thomas More"}` em `País {nome: "Brasil"}` quando `Data { ano: 1516 }`
+Pode ser utilizado para **classificação de notícia**, onde um jornalista cadastra um texto de uma notícia e o mesmo é processado para determinar automáticamente os tópicos para indexação da notícia.
 
-NLTK &rarr; ferramentas prontas para identificação de pessoas/empresas em textos
+1. **Entrada**: Texto da notícia
+1. **Classificador Multirrótulo**
+1. **Saída**: Tópicos (esporte, rio de janeiro, economia, etc)
 
-### Associações
+> ℹ️ Outros exemplos mais aprofundados podem ser encontrados em [`docs/classificacao.md`](docs/classificacao.md)
 
-- Correlação entre palavras  
-  - "60% dos textos que contêm a palavra 'Internacional' também contêm a palavra 'Grêmio'. 3% de todos os textos contêm ambas as palavras". _Representação: {"Internacional"} <-> {"Grêmio}_
-  - "A presença do termo 'Pelé' aumenta 5 vezes a chance de ocorrência dos termos 'Copa' e '1970'". _Representação: {"Pelé"} <-> {"Copa", "1970"}_
+### Agrupamento _(Clustering)_
 
-### Casamento de esquemas
+É semelhante a **Classificação** só que para grupos ainda não definidos.
 
-- Correspondências semânticas
-  - Importador para migrar dados de um software antigo para um sistema novo, análise das bases de dados antiga e nova, campo a campo.
+#### Agrupamento Exemplo 1
 
-- Algoritmo como matcher (PLN - Processamento de Linguagem Natural)
-  - É necessário fazer uma análise de ontologias;
-  - Consulta do usuário: "encontre os livros do Robert C. Martin", aplica algoritmo de matcher e obtém a seguinte consulta:
+Pode ser utilizado numa fonte como o IBGE para a **descoberta de bairros similares** (Jardim Angélica e Jdim Angélica), evitando problemas como erros de digitação
 
-  ```sql
-  SELECT titulo, ano, resumo FROM publicacoes WHERE autor like '%Robert C. Martin%' and tipo = 'livro'
-  ```
+#### Agrupamento Exemplo 2
 
-### Recuperação da informação
+É utilizado por revistas científicas para **detecção de plágio** na submissão de artigos com frases e palavras similares à outros já publicados.
 
-- Localizar e ranquear documentos relevantes em uma coleção;
-- Indexação (API Lucene - Java)
+### Extração de Informação
+
+Ter um texto livre e extrair atributos que estão descritos neste texto.
+
+#### Extração de Informação Exemplo 1
+
+Dado o **texto**:
+
+> "Apesar de ter sido escrito em 1516, Utopia continua sendo um dos mais interessantes livros sobre pensamento político. A obra de Thomas More descreve uma ilha imaginária onde não existe propriedade privada e todos se preocupam com o bem da coletividade. A nova edição foi lançada pela Editora XYZ e está sendo vendida por R$ 9,90"
+
+Pode ser extraído o **template** abaixo:
+
+- Livro: Utopia
+- Ano: 1516
+- País: -
+- Autor: Thomas More
+- Editora: XYZ
+- Preço: 9,90
+
+#### Extração de Informação Exemplo 2
+
+Baseado no exemplo acima, é possível ainda fazer a utilização de **ontologias** para representar **conceitos e relacionamentos** em um determinado domínio (a biblioteca NLTK possui algumas funcionalidades para trabalhar com isso)
+
+Exemplo de um relacionamento de entidades:
+
+> `Livro {nome: "Utopia"}` é escrito por `Autor {nome: "Thomas More"}` em `País {nome: "Brasil"}` quando `Data {ano: 1516}`
+
+### Associação
+
+É utilizada para se obter a correlação entre palavras
+
+Nesta técnica temos um exemplo clássico, do Walmart, onde foi identificado que sempre que se vendia fralda também se vendia cerveja, fazendo-os reposicionar fisicamente os objetos nos supermercados para aprimorar vendas.
+
+#### Associação Exemplo 1
+
+Dado que:
+
+> 60% dos textos que contêm a palavra 'Internacional' também contêm a palavra 'Grêmio'. 3% de todos os textos contêm ambas as palavras
+
+Temos a **Representação de Correlação: {"Internacional"} <-> {"Grêmio}**
+
+#### Associação Exemplo 2
+
+Dado que:
+
+> A presença do termo 'Pelé' aumenta 5 vezes a chance de ocorrência dos termos 'Copa' e '1970'
+
+Temos a **Representação de Correlação: {"Pelé"} <-> {"Copa", "1970"}**
+
+### Casamento de Esquemas
+
+Pode ser utilizado para entender correspondências semânticas (mesmos significados)
+
+#### Casamento de Esquemas Exemplo 1
+
+Migração de dados entre duas bases de dados, onde possuem tabela origem e destino porém com a **primary_key** com nomes diferentes. É usado então entender automáticamente o de-para dos campos.
+
+#### Casamento de Esquemas Exemplo 2
+
+Através de um algorítimo de correspondência **(matcher)** permitir que um usuário esquema uma consulta em linguagem natural e a mesma ser convertida para um select no banco de dados.
+
+Consulta do usuário:
+
+> Encontre os livros do Robert C. Martin ***via texto ou voz com técnicas de processamento de linguagem natural (PLN)***
+
+Saída:
+
+```sql
+SELECT titulo, ano, resumo FROM publicacoes WHERE autor like '%Robert C. Martin%' and tipo = 'livro'
+```
+
+### Recuperação da Informação
+
+É utilizada para **localizar e ranquear** documentos relevantes em uma coleção de documentos. Esta técnica é utilizada pela ferramenta **Apache Lucene**
+
+Onde podemos ter uma tabela hash de palavras que apontam para documentos que a contenham.
 
 | Palavra    | Ponteiro 1  | Ponteiro 2   | Ponteiro 3   | Ponteiro 4   |
 |------------|-------------|--------------|--------------|--------------|
 | "goleador" | Documento 3 | Documento 12 |              |              |
-| "goleiro"  | Documento 7 | Documento 1  | Documento 27 | Documento 19 |
-| "gol"      | Documento 1 | Documento 2  |              |              |
+| "goleiro"  | Documento 7 | **Documento 1**  | Documento 27 | Documento 19 |
+| "gol"      | **Documento 1** | **Documento 2**  |              |              |
 
-Documento 1: "... um belo **gol** no segundo tempo..."  
-Documento 2: "Não aconteceu nenhum **gol** por conta de ..."
+**Documento 1**: "... um belo **gol** no segundo tempo..."
 
-### Sumarização de documentos
+**Documento 2**: "Não aconteceu nenhum **gol** por conta de ..."
 
-    Texto com bastante linhas <- aplicar algoritmo de sumarização -> Resumo do texto com os principais pontos em poucas linhas
+### Sumarização de Documentos
 
-### Abordagens da mineração de textos
+É aplicado algoritmo de sumarização em um texto com bastante linhas e obtêm-se um **resumo do texto** com os principais pontos em poucas linhas.
 
-- Estatística
-  - Frequência dos termos, ignorando informações semânticas;
+## Abordagens para Mineração de Texto
 
-- Processamento de linguagem natural (PLN)
-  - Interpretação sintática e semântica das frases;
-  - Fazer o computador entender textos escritos em linguagem humana.
+1. **Estatística**: Frequência dos termos, ignorando informações semânticas.
+1. **Processamento de Linguagem Natural (PLN)**:
+   - Interpretação sintática e semântica das frases.
+   - Fazer o computador entender textos escritos em linguagem humana.
 
-### Mineração de emoção
+## Mineração de Emoção
 
-- Classificação: aplicar algoritmo em texto e extrair as emoções: "Alegria", "Tristeza", "Medo", etc;
-- Monitoramento de marcas, entidades, figuras sociais;
+A **mineração de emoção em textos** faz parte da **mineração de textos** e é utilizado a técnica de **classificação**
+
+Em que cenários se faz útil?
+
+- Monitoramento de marcas, entidades, figuras sociais
+  - Ex: uma pessoa compra uma televisão, e faz um review na Internet, dependendo da emoção transmitida a empresa pode tomar uma decisão, como por exemplo, caso não esteja insatisfeito é bastante provavel que a emoção seja **raiva**
 - Gestão de crises;
 - Entender o que as pessoas pensam;
-- Classificação por polaridade (valência): submeter um texto em um algoritmo: "Positivo", "Neutro" e "Negativo"
-- Classificação por emoção (6 bases): Supresa, Alegria, Tristeza, Medo, Disgosto e Raiva _(segundo estudo do Paul Ekman)_
 
-### Classificação
+### Classificação por Polaridade
 
-- Cada registro pertence a uma classe que possui um conjunto de atributos previsores;
-- Objetiva-se descobrir um relacionamento entre os atributos previsores e o atributo meta;
-- O valor do atributo meta é conhecido através de aprendizagem superviosionada;
+Também chamada de **valência** é submetido um texto em um algoritmo e recebe-se uma categoria dessas três: "Positivo", "Neutro" e "Negativo".
 
-#### Tabela de treinamento (Classificação de risco de crédito)
+### Classificação por Emoção (Paul Ekman)
 
-Atributos previsores: histórica do crédito, divida, garantias, renda anual;  
-Atributo meta (classe): risco.
+Segundo estudo do Paul Ekman, o ser humano consegue expressar 6 emoções bases:
 
-| História do crédito | Dívida | Garantias | Renda anual           | Risco    |
-|---------------------|--------|-----------|-----------------------|----------|
-| Ruim                | Alta   | Nenhuma   | < 15.000              | Alto     |
-| Desconhecida        | Alta   | Nenhuma   | >= 15.000 a <= 35.000 | Alto     |
-| Desconhecida        | Baixa  | Nenhuma   | >= 15.000 a <= 35.000 | Moderado |
-| Desconhecida        | Baixa  | Nenhuma   | < 15.000              | Alto     |
-| Desconhecida        | Baixa  | Nenhuma   | > 35.000              | Baixo    |
-| Desconhecida        | Baixa  | Adequada  | > 35.000              | Baixo    |
-| Ruim                | Baixa  | Nenhuma   | < 15.000              | Alto     |
-| Ruim                | Baixa  | Adequada  | > 35.000              | Moderado |
-| Boa                 | Baixa  | Nenhuma   | > 35.000              | Baixo    |
-| Boa                 | Alta   | Adequada  | > 35.000              | Baixo    |
-| Boa                 | Alta   | Nenhuma   | < 15.000              | Alto     |
-| Boa                 | Alta   | Nenhuma   | >= 15.000 a <= 35.000 | Moderado |
-| Boa                 | Alta   | Nenhuma   | > 35.0000             | Baixo    |
-| Ruim                | Alta   | Nenhuma   | >= 15.000 a <= 35.000 | Alto     |
+1. Supresa
+2. Alegria
+3. Tristeza
+4. Medo
+5. Disgosto
+6. Raiva
 
-#### Tabela de testes (Classificação de risco de crédito)
+<!--
 
-| História do crédito | Dívida | Garantias | Renda anual           |
-|---------------------|--------|-----------|-----------------------|
-| Ruim                | Alta   | Adequada  | < 15.000              |
-| Desconhecida        | Alta   | Adequada  | < 15.000              |
-| Desconhecida        | Baixa  | Nenhuma   | > 35.000              |
-| Boa                 | Alta   | Adequada  | >= 15.000 a <= 35.000 |
-
-#### Tabela de treinamento (Classificação de vendas de livros)
-
-Atributos previsores: sexo, país, idade;  
-Atributo meta (classe): comprar.
-
-| Sexo | País       | Idade | Comprar |
-|------|------------|-------|---------|
-| M    | França     | 25    | Sim     |
-| M    | Inglaterra | 21    | Sim     |
-| F    | França     | 23    | Sim     |
-| F    | Inglaterra | 34    | Sim     |
-| F    | França     | 30    | Não     |
-| M    | Alemanha   | 21    | Não     |
-| M    | Alemanha   | 20    | Não     |
-| F    | Alemanha   | 18    | Não     |
-| F    | França     | 34    | Não     |
-| F    | França     | 34    | Não     |
-| M    | França     | 55    | Não     |
-| M    | Inglaterra | 25    | Sim     |
-| M    | Alemanha   | 48    | Sim     |
-| F    | Inglaterra | 23    | Não     |
-
-#### Tabela de testes (Classificação de vendas de livros)
-
-| Sexo | País       | Idade |
-|------|------------|-------|
-| M    | França     | 38    |
-| F    | Inglaterra | 25    |
-| M    | Alemanha   | 55    |
-| F    | França     | 20    |
-
-#### Representação da classificação
-
-- Método indutivo:
-  - Fase 1: conjunto de exemplos + atributos previsores + atributo meta > sistema de aprendizado (algoritmos) > gera um classificador (modelo).
-  - Fase 2: caso a ser classificado (atributo meta não conhecido) > classificador > decisão.
-
-- Aprendizagem supervisionada (indução):
-  - Fase 1: uma imagem do Homer Simpson e do Bart Simpson > extração de características (cores de roupas, pele, cabelo, etc) > algoritmo de aprendizagem (supervisor) > modelo aprendido.
-  - Fase 2: imagem do Bart Simpson > extração de caraterísticas > modelo aprendido > Bart Simpson;
-
-### Classificação em textos
-
-| Frase                      | Classe  |
-|----------------------------|---------|
-|Me sinto completamente amado| Alegria |
-|Eu estou muito bem hoje     | Alegria |
-|Isso me deixa apavorada     | Medo    |
-|Este lugar é apavorante     | Medo    |
-
-Como ficaria uma base de dados da classificação acima:
-
-Todas as características (atributos previsores) estão dispostas nas colunas, eliminando duplicidades, eliminando stop words (Ex: "é"). É comum em uma base real de trabalho possuir mais de 70.000 características.
-
-| Me | Sinto | Completamente | Amado | Eu | Estou | Muito | Bem | Hoje | Isso | Deixa | Apavorada | Este | Lugar | Apavorante |  Classe |
-|:--:|:-----:|:-------------:|:-----:|:--:|:-----:|:-----:|:---:|:----:|:----:|:-----:|:---------:|:----:|:-----:|:----------:|:-------:|
-|  S |   S   |       S       |   S   |  N |   N   |   N   |  N  |   N  |   N  |   N   |     N     |   N  |   N   |      N     | Alegria |
-|  N |   N   |       N       |   N   |  S |   S   |   S   |  S  |   S  |   N  |   N   |     N     |   N  |   N   |      N     | Alegria |
-|  S |   N   |       N       |   N   |  N |   N   |   N   |  N  |   N  |   S  |   S   |     S     |   N  |   N   |      N     |   Medo  |
-|  N |   N   |       N       |   N   |  N |   N   |   N   |  N  |   N  |   N  |   N   |     N     |   S  |   S   |      S     |   Medo  |
-
----
-
-## 2. Pré-processamento dos textos
+## Pré-processamento dos textos
 
 ### Processamento de Linguagem Natural (PLN)
 
@@ -208,13 +201,13 @@ Todas as características (atributos previsores) estão dispostas nas colunas, e
 
 Python (utilizado versão 3.7)
 
-Instalar libs:  
-`./easy_install.exe nltk`  
+Instalar libs:
+`./easy_install.exe nltk`
 `./easy_install.exe numpy`
 
 Exemplos práticos em no diretório `./scripts`
 
-## 3. Detectando emoções em textos com Naive Bayes
+## Detectando emoções em textos com Naive Bayes
 
 - "Naive Bayes" é um algoritmo baseado em probabilidade e estatística muito utilizado para tarefas de mineração de textos;
 - Classificação de textos com "Naive Bayes" e NLTK;
@@ -231,30 +224,21 @@ Exemplos práticos em no diretório `./scripts`
 
 ![Tabela de probabilidade - Risco de crédito](https://i.imgur.com/LnvhB7m.png)
 
-## 4. Avaliação do algoritmo
+## Avaliação do algoritmo
 
 Características para se levar em consideração antes do uso deste algorítmo:
 
 1. Cenário
 2. Número de classes (com as 6 emoções, o algoritmo alcançou acerto de 39%)
-3. "zero-rules" dependendo da aplicação este método é mais aplicável (classifica todas as frases com base na classe mais utilizada)
-
-## 5. Considerações finais
-
-_Sem conteúdo ainda_.
+3. "zero-rules" dependendo da aplicação este método é mais aplicável (classifica todas as frases com base na classe mais utilizada) -->
 
 ## Referências
 
+- [Top Five Emotion / Sentiment Analysis APIs for understanding user sentiment trends.](https://medium.com/@Mandysidana/top-five-emotional-sentiment-analysis-apis-116cd8d42055)
 - [Mineração de Emoção em Textos com Python e NLKT @ Udemy](https://www.udemy.com/mineracao-de-emocao-em-textos-com-python-e-nltk)
-
 - [Introdução ao NLTK na Prática](https://www.youtube.com/watch?v=siVUal-TeMc)
-
 - [NLTK em Português](http://www.nltk.org/howto/portuguese_en.html)
-
 - [Penn Part of Speech Tags](https://cs.nyu.edu/grishman/jet/guide/PennPOS.html)
-
 - [Estrutura e formação de palavras - Raiz e radical](https://www.soportugues.com.br/secoes/morf/morf2.php)
-
 - [Stemming words with NLTK](https://pythonprogramming.net/stemming-nltk-tutorial/)
-
 - [Markdown Table Generator](https://www.tablesgenerator.com/markdown_tables)
