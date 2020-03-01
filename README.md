@@ -140,11 +140,11 @@ SELECT titulo, ano, resumo FROM publicacoes WHERE autor like '%Robert C. Martin%
 
 Onde podemos ter uma tabela hash de palavras que apontam para documentos que a contenham.
 
-| Palavra    | Ponteiro 1  | Ponteiro 2   | Ponteiro 3   | Ponteiro 4   |
-|------------|-------------|--------------|--------------|--------------|
-| "goleador" | Documento 3 | Documento 12 |              |              |
-| "goleiro"  | Documento 7 | **Documento 1**  | Documento 27 | Documento 19 |
-| "gol"      | **Documento 1** | **Documento 2**  |              |              |
+| Palavra    | Ponteiro 1      | Ponteiro 2      | Ponteiro 3   | Ponteiro 4   |
+| ---------- | --------------- | --------------- | ------------ | ------------ |
+| "goleador" | Documento 3     | Documento 12    |              |              |
+| "goleiro"  | Documento 7     | **Documento 1** | Documento 27 | Documento 19 |
+| "gol"      | **Documento 1** | **Documento 2** |              |              |
 
 **Documento 1**: "... um belo **gol** no segundo tempo..."
 
@@ -187,6 +187,33 @@ Segundo estudo do Paul Ekman, o ser humano consegue expressar 6 emoções bases:
 5. Disgosto
 6. Raiva
 
+## Classificação em Textos
+
+- **Atributos previsores**: As próprias palavras
+- **Atributo meta (classe)**: Emoção (alegria e medo)
+
+| Frase                        | Classe  |
+| ---------------------------- | ------- |
+| Me sinto completamente amado | Alegria |
+| Eu estou muito bem hoje      | Alegria |
+| Isso me deixa apavorada      | Medo    |
+| Este lugar é apavorante      | Medo    |
+
+Abaixo, temos como ficaria uma base de dados da classificação acima.
+
+Todas as características (atributos previsores) são dispostas nas colunas, **eliminando duplicados**, **eliminando stop words**.
+
+> É comum em uma base real de trabalho possuir mais de 70.000 características.
+
+> "stop words" são palavras que não são utilizadas devido ao seu baixo valor de relevância, diminuindo assim dimensão da base de dados (Ex: "a", "é", "ou", "e", "do", "deu")
+
+| Me  | Sinto | Completamente | Amado | Eu  | Estou | Muito | Bem | Hoje | Isso | Deixa | Apavorada | Este | Lugar | Apavorante | Classe  |
+| --- | ----- | ------------- | ----- | --- | ----- | ----- | --- | ---- | ---- | ----- | --------- | ---- | ----- | ---------- | ------- |
+| S   | S     | S             | S     | N   | N     | N     | N   | N    | N    | N     | N         | N    | N     | N          | Alegria |
+| N   | N     | N             | N     | S   | S     | S     | S   | S    | N    | N     | N         | N    | N     | N          | Alegria |
+| S   | N     | N             | N     | N   | N     | N     | N   | N    | S    | S     | S         | N    | N     | N          | Medo    |
+| N   | N     | N             | N     | N   | N     | N     | N   | N    | N    | N     | N         | S    | S     | S          | Medo    |
+
 <!--
 
 ## Pré-processamento dos textos
@@ -194,14 +221,14 @@ Segundo estudo do Paul Ekman, o ser humano consegue expressar 6 emoções bases:
 ### Processamento de Linguagem Natural (PLN)
 
 - Compreensão automática de linguagens humanas (falado ou escrito);
-  - Exemplo: "Este filme é para adulto" e "Este filme é de um adulto";
+  - Exemplo "Este filme é para adulto" e "Este filme é de um adulto";
 - Conversar com computadores;
 
 #### Instalação NLTK
 
 Python (utilizado versão 3.7)
 
-Instalar libs:
+Instalar libs
 `./easy_install.exe nltk`
 `./easy_install.exe numpy`
 
