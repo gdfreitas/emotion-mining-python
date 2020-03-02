@@ -1,5 +1,5 @@
 import nltk
-import data
+import database
 import impl
 
 frases_com_stemming_treinamento = impl.apply_stemmer(data.base_treinamento)

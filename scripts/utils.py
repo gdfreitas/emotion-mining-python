@@ -1,6 +1,7 @@
-import nltk
+from nltk import corpus, stem, FreqDist, metrics
+from nltk.metrics import ConfusionMatrix
 
-stop_words_nltk = nltk.corpus.stopwords.words('portuguese')
+stop_words_nltk = corpus.stopwords.words('portuguese')
 
 # adiciona stop words customizadas às do nltk
 stop_words_nltk.extend(['tão', 'vou', 'vai'])
@@ -9,15 +10,15 @@ stop_words_nltk.extend(['tão', 'vou', 'vai'])
 # "stop words" são palavras que não possuem relevância para o entendimento do contexto
 def remove_stop_words(text):
    frases = []
-   for (palavras, emocao) in text:
-      sem_stop = [p for p in palavras.split() if p not in stop_words_nltk]
+   for (frase, emocao) in text:
+      sem_stop = [p for p in frase.split() if p not in stop_words_nltk]
       frases.append((sem_stop, emocao))
    return frases
 
 # Método para reduzir palavras "flexionadas" até sua base/raiz, que é o suficiente para o entendimento
 # "text_and_class" deve ser um objeto com a frase e a emoção classificada
 def apply_stemmer(text_and_class):
-   stemmer = nltk.stem.RSLPStemmer()  # stemmer usado com a linguagem português
+   stemmer = stem.RSLPStemmer()  # stemmer usado com a linguagem português
    frases = []
    for (palavras, emocao) in text_and_class:
       com_stemming = [str(stemmer.stem(p)) for p in palavras.split() if p not in stop_words_nltk] # aplica o stemming nas palavras da frase e desconsidera as stop_words
@@ -27,7 +28,7 @@ def apply_stemmer(text_and_class):
 # Método para reduzir palavras "flexionadas" até sua base/raiz, que é o suficiente para o entendimento
 # "text" deve ser um texto
 def apply_stemmer_text(text):
-   stemmer = nltk.stem.RSLPStemmer() # stemmer usado com a linguagem português
+   stemmer = stem.RSLPStemmer() # stemmer usado com a linguagem português
    palavras_result = []
    for (palavras) in text.split():
       com_stemming = [str(stemmer.stem(p)) for p in palavras.split() if p not in stop_words_nltk] # aplica o stemming nas palavras da frase e desconsidera as stop_words
@@ -44,7 +45,7 @@ def concat_words(frases):
 
 # Método para identificar a frequência de cada palavra da lista do parâmetro
 def find_frequency(palavras):
-   return nltk.FreqDist(palavras)
+   return FreqDist(palavras)
 
 # Método para encontrar as palavras únicas conforme a frequência
 def find_unique_words(palavras):
@@ -64,12 +65,11 @@ def classify_and_test_accurary(classificador, base):
       resultado = classificador.classify(frase)
       if resultado != classe:
          erros.append((classe, resultado, frase))
-   
+
    for (classe, resultado, frase) in erros:
       print(classe, resultado) #, frase)
 
 def print_confusion_matrix(classificador, base):
-   from nltk.metrics import ConfusionMatrix
    esperado = []
    previsto = []
    for (frase, classe) in base:

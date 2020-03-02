@@ -205,7 +205,8 @@ Todas as características (atributos previsores) são dispostas nas colunas, **e
 
 > É comum em uma base real de trabalho possuir mais de 70.000 características.
 
-> "stop words" são palavras que não são utilizadas devido ao seu baixo valor de relevância, diminuindo assim dimensão da base de dados (Ex: "a", "é", "ou", "e", "do", "deu")
+> **"stop words"** são palavras que não são utilizadas devido ao seu baixo valor de relevância, diminuindo assim dimensão da base de dados (Ex: "a", "é", "ou", "e", "do", "deu")
+> Há também outras técnicas como **"stemming"** que remove os radicais das palavras também para diminuir a dimensão da base de dados (Ex: livro, livrinho, livreto, livretiol)
 
 | Me  | Sinto | Completamente | Amado | Eu  | Estou | Muito | Bem | Hoje | Isso | Deixa | Apavorada | Este | Lugar | Apavorante | Classe  |
 | --- | ----- | ------------- | ----- | --- | ----- | ----- | --- | ---- | ---- | ----- | --------- | ---- | ----- | ---------- | ------- |
@@ -214,15 +215,26 @@ Todas as características (atributos previsores) são dispostas nas colunas, **e
 | S   | N     | N             | N     | N   | N     | N     | N   | N    | S    | S     | S         | N    | N     | N          | Medo    |
 | N   | N     | N             | N     | N   | N     | N     | N   | N    | N    | N     | N         | S    | S     | S          | Medo    |
 
+## Setup Environment
+
+- Instalar o Python `python v3+`
+- Instalar o NLTK (Natural Language ToolKit) `pip install nltk`
+
+### Natural Language ToolKit - NLTK
+
+É uma biblioteca para processamento de linguagem natural, escrita em Python
+
+Possui varios recursos, como: classificação, tokenização, *stemming*, *tagging*, *parsing* e raciocínio semântico.
+
+Um script de atualização da biblioteca pode ser encontrado em [`scripts/nltk_gui_update.py`](scripts/nltk_gui_update.py)
+
+Criar um script em python para atualizar as coleções do NLTK
+
 <!--
 
 ## Pré-processamento dos textos
 
-### Processamento de Linguagem Natural (PLN)
 
-- Compreensão automática de linguagens humanas (falado ou escrito);
-  - Exemplo "Este filme é para adulto" e "Este filme é de um adulto";
-- Conversar com computadores;
 
 #### Instalação NLTK
 
