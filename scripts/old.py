@@ -14,21 +14,6 @@ frequencias_teste = impl.find_frequency(palavras_com_stemming_teste)
 palavras_unicas_treinamento = impl.find_unique_words(frequencias_treinamento)
 palavras_unicas_teste = impl.find_unique_words(frequencias_teste)
 
-# método para verificar se as palavras do documento do parâmetro está na lista de palavras únicas
-def words_extractor_treinamento(documento):
-   doc = set(documento)
-   caracteristicas = {}
-   for word in palavras_unicas_treinamento:
-      caracteristicas['%s' % word] = (word in doc)
-   return caracteristicas
-
-def words_extractor_teste(documento):
-   doc = set(documento)
-   caracteristicas = {}
-   for word in palavras_unicas_teste:
-      caracteristicas['%s' % word] = (word in doc)
-   return caracteristicas
-
 # Método aplica e imprime os resultados
 def apply_and_print_results(classificador, texto):
    documento = impl.apply_stemmer_text(texto)

@@ -206,7 +206,7 @@ Todas as características (atributos previsores) são dispostas nas colunas, **e
 > É comum em uma base real de trabalho possuir mais de 70.000 características.
 
 > **"stop words"** são palavras que não são utilizadas devido ao seu baixo valor de relevância, diminuindo assim dimensão da base de dados (Ex: "a", "é", "ou", "e", "do", "deu")
-> Há também outras técnicas como **"stemming"** que remove os radicais das palavras também para diminuir a dimensão da base de dados (Ex: livro, livrinho, livreto, livretiol)
+> Há também outras técnicas como **"stemming"** que remove os radicais das palavras também para diminuir a dimensão da base de dados (Ex: livro, livrinho, livreto, livretiol) [Estrutura e Formação das Palavras - Morfologia - Raiz/Radical](https://www.soportugues.com.br/secoes/morf/morf2.php)
 
 | Me  | Sinto | Completamente | Amado | Eu  | Estou | Muito | Bem | Hoje | Isso | Deixa | Apavorada | Este | Lugar | Apavorante | Classe  |
 | --- | ----- | ------------- | ----- | --- | ----- | ----- | --- | ---- | ---- | ----- | --------- | ---- | ----- | ---------- | ------- |
@@ -215,10 +215,10 @@ Todas as características (atributos previsores) são dispostas nas colunas, **e
 | S   | N     | N             | N     | N   | N     | N     | N   | N    | S    | S     | S         | N    | N     | N          | Medo    |
 | N   | N     | N             | N     | N   | N     | N     | N   | N    | N    | N     | N         | S    | S     | S          | Medo    |
 
-## Setup Environment
+## Ambiente em Python
 
 - Instalar o Python `python v3+`
-- Instalar o NLTK (Natural Language ToolKit) `pip install nltk`
+- Instalar dependências `pip install -r requirements.txt`
 
 ### Natural Language ToolKit - NLTK
 
@@ -230,22 +230,11 @@ Um script de atualização da biblioteca pode ser encontrado em [`scripts/nltk_g
 
 Criar um script em python para atualizar as coleções do NLTK
 
+## Scripts
+
+Exemplos práticos em no diretório [`./scripts`](`./scripts`)
+
 <!--
-
-## Pré-processamento dos textos
-
-
-
-#### Instalação NLTK
-
-Python (utilizado versão 3.7)
-
-Instalar libs
-`./easy_install.exe nltk`
-`./easy_install.exe numpy`
-
-Exemplos práticos em no diretório `./scripts`
-
 ## Detectando emoções em textos com Naive Bayes
 
 - "Naive Bayes" é um algoritmo baseado em probabilidade e estatística muito utilizado para tarefas de mineração de textos;
