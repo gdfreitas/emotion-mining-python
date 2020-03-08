@@ -230,29 +230,22 @@ Um script de atualização da biblioteca pode ser encontrado em [`scripts/nltk_g
 
 Criar um script em python para atualizar as coleções do NLTK
 
+### Naive Bayes
+
+É um algoritmo de abordagem probabilística (Teorema de Bayes)
+
+É bastante utilizado em:
+
+- Filtros de spam em e-mails, analizando a probabilidade das palavras do seu conteúdo estarem relacionadas a e-mails de spam.
+- Mineração de emoções, área de computação afetiva (sub área de inteligência artificial), dado um texto é identificado a emoção do texto, podendo ser usado para avaliar o grau de satisfação dos clientes por comentários relativos a um produto.
+
+Exemplo em [./docs/naive_bayes.md](./docs/naive_bayes.md)
+
 ## Scripts
 
 Exemplos práticos em no diretório [`./scripts`](`./scripts`)
 
-<!--
-## Detectando emoções em textos com Naive Bayes
-
-- "Naive Bayes" é um algoritmo baseado em probabilidade e estatística muito utilizado para tarefas de mineração de textos;
-- Classificação de textos com "Naive Bayes" e NLTK;
-
-- Abordagem probabilística (Teorema de Bayes)
-- Exemplos de aplicação do algoritmo:
-  - Filtros de spam em e-mails;
-  - Mineração de emoções (Computação Afetiva);
-  - Separação de documentos;
-
-- `Base de dados original > Treinamento/Aprendizagem do Algoritmo Naive Bayes > Tabela de probabilidade`
-
-- Criar tabela de probabilidade manual com base no exemplo do **risco de crédito**:
-
-![Tabela de probabilidade - Risco de crédito](https://i.imgur.com/LnvhB7m.png)
-
-## Avaliação do algoritmo
+<!-- ## Avaliação do algoritmo
 
 Características para se levar em consideração antes do uso deste algorítmo:
 

@@ -122,16 +122,26 @@ def find_unique_words(words):
     words (list<string>): Lista de palavras
 
   Retorna
-    (list<string>): Lista de palavras únidas
+    (list<string>): Lista de palavras únicas
   """
   return find_frequency(words).keys()
 
-def find_which_words_is_unique(unique_words, text):
-  text_as_set = set(text)
+def build_truth_table_for_unique_words(unique_words, words):
+  """
+  Monta tabela verdade com suas "colunas" sendo "unique_words" para as palavras em "words"
+
+  Parâmetros:
+    unique_words (list<string>): Lista de palavras únicas
+    words (list<string>): Lista de palavras para verificar verdade na tabela
+
+  Retorna:
+    object: Tabela verdade
+  """
+  words_as_set = set(words)
   unique_words_object = {}
 
   for word in unique_words:
-    unique_words_object['%s' % word] = (word in text_as_set)
+    unique_words_object['%s' % word] = (word in words_as_set)
 
   return unique_words_object
 
@@ -173,23 +183,29 @@ print_space_between_logs()
 # Remove palavras duplicadas
 all_unique_words = find_unique_words(all_words_transformed_database)
 print(all_unique_words)
+
+print_space_between_logs()
 print(f'A base transformada contém {len(all_unique_words)} palavras **únicas**')
 print_space_between_logs()
 
-# Obtem objeto de quais palavras da frase estao na lista de palavras únidas
-print(find_which_words_is_unique(all_unique_words, ['admir', 'muit', 'sint']))
+# Obtem tabela verdade de quais palavras da frase estao na lista de palavras únicas
+uniqueness_comparison_sample = ['admir', 'muit', 'sint']
+print(build_truth_table_for_unique_words(all_unique_words, uniqueness_comparison_sample))
 
 print_space_between_logs()
 
 # Utilização do NLTK para classificar a base de dados inteira
-def extractor_based_on_all_unique_words(text):
-  text_as_set = set(text)
+def truth_table_extractor_unique_words_based(words):
+  """
+  Obtem lista de palavras e retorna tabela verdade conforme "all_unique_words"
+  """
+  words_as_set = set(words)
   unique_words_object = {}
 
   for word in all_unique_words:
-    unique_words_object['%s' % word] = (word in text_as_set)
+    unique_words_object['%s' % word] = (word in words_as_set)
 
   return unique_words_object
 
-classified_database = classify.apply_features(extractor_based_on_all_unique_words, stemmed_database)
+classified_database = classify.apply_features(truth_table_extractor_unique_words_based, stemmed_database)
 print(classified_database)
