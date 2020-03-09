@@ -1,13 +1,12 @@
-from nltk import corpus, stem, FreqDist, metrics, classify
+from nltk import corpus, stem, FreqDist, metrics, classify, NaiveBayesClassifier
 from nltk.metrics import ConfusionMatrix
 
-from database import base_simples, stop_words
+from database import base_simples, base_treinamento,stop_words
 
-stop_words_nltk = corpus.stopwords.words('portuguese')
-stop_words_nltk.extend(['tão', 'vou', 'vai'])
-print(f'Carregado conjunto de stop words do NLTK com {len(stop_words_nltk)} palavras em Portugês')
+def print_space_between_logs():
+  print('\n', '-' * 20, '\n')
 
-def remove_stop_words(text):
+def remover_stop_words(text):
   """
   Remove as "stop words" da text do parâmetro
 
@@ -21,7 +20,14 @@ def remove_stop_words(text):
     word for word in text.split() if word not in stop_words_nltk
   ]
 
-def transform_database_removing_stop_words(database):
+def imprimir_base_frase_classe(base_frase_classe):
+  """
+  Imprime uma lista de tuplas no formato (frase, classe)
+  """
+  for (frase, classe) in base_frase_classe:
+    print(f'"{frase}": "{classe}"')
+
+def remover_stop_words_base_frase_classe(database):
   """
   Remove as "stop words" do database
 
@@ -34,18 +40,21 @@ def transform_database_removing_stop_words(database):
   transformed_database = []
 
   for (frase, emocao) in database:
-    frase_sem_stop_words = remove_stop_words(frase)
+    frase_sem_stop_words = remover_stop_words(frase)
     transformed_database.append((' '.join(frase_sem_stop_words), emocao))
 
   return transformed_database
 
-def transform_words_applying_stemming(text):
+def aplicar_stemming(text):
   """
   Aplica algoritmo de Stemming para reduzir as palavras da frase do parâmetro até sua base (raiz)
   O resultado apresentado auxilia na identificação do significado da palavra e diminuição de dimensão da base de dados
 
   Parâmetros:
     text (string): Texto contendo palavras
+
+  Retorna:
+    list<string>: Lista de palavras com stemming aplicado
   """
   # stemmer usado com a linguagem português
   stemmer = stem.RSLPStemmer()
@@ -60,7 +69,7 @@ def transform_words_applying_stemming(text):
   return transformed_words
 
 
-def transform_words_applying_stemming_database(database):
+def aplicar_stemming_database(database):
   """
   Aplica algoritmo de Stemming para reduzir as palavras das frases do database do parâmetro até sua base (raiz)
   O resultado apresentado auxilia na identificação do significado da palavra e diminuição de dimensão da base de dados
@@ -74,12 +83,12 @@ def transform_words_applying_stemming_database(database):
   transformed_database = []
 
   for (palavras, emocao) in database:
-    transformed_words = transform_words_applying_stemming(palavras)
+    transformed_words = aplicar_stemming(palavras)
     transformed_database.append((' '.join(transformed_words), emocao))
 
   return transformed_database
 
-def concat_words_database(database):
+def extrair_todas_palavras_base(database):
   """
   Concatena todas as palavras de todas as frases do database
 
@@ -126,7 +135,7 @@ def find_unique_words(words):
   """
   return find_frequency(words).keys()
 
-def build_truth_table_for_unique_words(unique_words, words):
+def construir_linha_tabela_probabilidade(unique_words, words):
   """
   Monta tabela verdade com suas "colunas" sendo "unique_words" para as palavras em "words"
 
@@ -145,67 +154,135 @@ def build_truth_table_for_unique_words(unique_words, words):
 
   return unique_words_object
 
-def print_space_between_logs():
-  print('\n', '-'*50)
+
+print_space_between_logs()
+
+stop_words_nltk = corpus.stopwords.words('portuguese')
+stop_words_nltk.extend(['tão', 'vou', 'vai'])
+
+print(f'Carregado conjunto de stop words do NLTK com {len(stop_words_nltk)} palavras em Português')
+
+print_space_between_logs()
 
 # Remove stop words em frase simples
-# frase_simples = 'eu sou admirada por muitos'
-# print(f'A frase "{frase_simples}" sem "stop words" fica "{" ".join(remove_stop_words(frase_simples))}"')
-
-# Remove stop words em database simples
-database_without_stop_words = transform_database_removing_stop_words(base_simples)
-print(database_without_stop_words)
-print_space_between_logs()
-
-# Aplica algoritmo de stemming em frase simples
-# frase_com_palavras_flexionadas = 'eu sou admirada por muitos'
-# print(transform_words_applying_stemming(frase_com_palavras_flexionadas))
-
-# Aplica algoritmo de stemming em database simples
-stemmed_database = transform_words_applying_stemming_database(database_without_stop_words)
-print(stemmed_database)
-print_space_between_logs()
-
-# Obtem uma lista de todas as palavras de uma base de dados
-# print(concat_words_database(base_simples))
-
-# Compara diferença entre quantidade de palavras após remoção de stop words e aplicação de stemming
-all_words_original_database = concat_words_database(base_simples)
-all_words_transformed_database = concat_words_database(stemmed_database)
-print(f'A base original continha {len(all_words_original_database)} palavras')
-print(f'A base transformada contém {len(all_words_transformed_database)} palavras')
-print_space_between_logs()
-
-# Trabalha com a frequência das palavras, obtendo as 5 mais presentes
-print(find_frequency(all_words_transformed_database).most_common(5))
-print_space_between_logs()
-
-# Remove palavras duplicadas
-all_unique_words = find_unique_words(all_words_transformed_database)
-print(all_unique_words)
+frase_simples = 'eu sou admirada por muitos'
+print(f'A frase "{frase_simples}" sem stop words fica {remover_stop_words(frase_simples)}')
 
 print_space_between_logs()
-print(f'A base transformada contém {len(all_unique_words)} palavras **únicas**')
+
+# Aplica stemming em frase simples
+print(f'A frase "{frase_simples}" aplicando stemming fica {aplicar_stemming(frase_simples)}')
+
 print_space_between_logs()
 
+# Base simples (frase, classe) original
+print('Base simples (frase, classe) original: \n')
+imprimir_base_frase_classe(base_simples)
+print_space_between_logs()
+
+# Base simples (frase, classe) sem stop words
+print('Base simples (frase, classe) sem stop words: \n')
+base_simples_sem_stop_words = remover_stop_words_base_frase_classe(base_simples)
+imprimir_base_frase_classe(base_simples_sem_stop_words)
+print_space_between_logs()
+
+# Base simples (frase, classe) sem stop words e com stemming aplicado
+print('Base simples (frase, classe) sem stop words e com stemming aplicado: \n')
+base_simples_sem_stop_words_stemmed = aplicar_stemming_database(base_simples_sem_stop_words)
+imprimir_base_frase_classe(base_simples_sem_stop_words_stemmed)
+print_space_between_logs()
+
+# Estatísticas de palavras sobre a base de dados
+print('Estatísticas de palavras sobre a base de dados\n')
+todas_palavras_base_simples = extrair_todas_palavras_base(base_simples)
+palavras_mais_frequentes_base_simples = find_frequency(todas_palavras_base_simples).most_common(5)
+palavras_unicas_base_simples = find_unique_words(todas_palavras_base_simples)
+
+todas_palavras_base_tratada = extrair_todas_palavras_base(base_simples_sem_stop_words_stemmed)
+palavras_mais_frequentes_base_tratada = find_frequency(todas_palavras_base_tratada).most_common(5)
+palavras_unicas_base_tratada = find_unique_words(todas_palavras_base_tratada)
+
+print(f'A base original contém {len(todas_palavras_base_simples)} palavras')
+print(f'Sendo as 5 mais comuns {palavras_mais_frequentes_base_simples}')
+print(f'Removendo duplicadas, temos {len(palavras_unicas_base_simples)} palavras únicas')
+
+print(f'\nA base tratada contém {len(todas_palavras_base_tratada)} palavras')
+print(f'Sendo as 5 mais comuns {palavras_mais_frequentes_base_tratada}')
+print(f'Removendo duplicadas, temos {len(palavras_unicas_base_tratada)} palavras únicas')
+print_space_between_logs()
+
+# Construção da tabela verdade
 # Obtem tabela verdade de quais palavras da frase estao na lista de palavras únicas
-uniqueness_comparison_sample = ['admir', 'muit', 'sint']
-print(build_truth_table_for_unique_words(all_unique_words, uniqueness_comparison_sample))
+frase_simples_tratada = aplicar_stemming(' '.join(remover_stop_words(frase_simples)))
+print(f'Construindo uma linha de uma tabela de probabilidade para a frase "{frase_simples}" ({frase_simples_tratada})\n')
+print(construir_linha_tabela_probabilidade(palavras_unicas_base_tratada, frase_simples_tratada))
 
 print_space_between_logs()
 
-# Utilização do NLTK para classificar a base de dados inteira
-def truth_table_extractor_unique_words_based(words):
+# Define método que será utilizado pelo classificador do NLTK para extração montagem da tabela verdade da base inteira
+def extrator_linha_nltk(frase):
   """
-  Obtem lista de palavras e retorna tabela verdade conforme "all_unique_words"
+    Obtem uma frase e retorna um objeto de "tabela verdade" indicando true ou false correspondendo
+    a existentica de cada palavra na lista de palavras da base de dados em "palavras_unicas_base_tratada"
   """
-  words_as_set = set(words)
-  unique_words_object = {}
+  palavras_da_frase = frase.split(' ')
+  palavras_unicas_da_frase = set(palavras_da_frase)
+  resultado_linha_palavra = {}
 
-  for word in all_unique_words:
-    unique_words_object['%s' % word] = (word in words_as_set)
+  for palavra_unica_base_tratada in palavras_unicas_base_tratada:
+    resultado_linha_palavra['%s' % palavra_unica_base_tratada] = (palavra_unica_base_tratada in palavras_unicas_da_frase)
 
-  return unique_words_object
+  # print(f'{frase}: {palavras_unicas_da_frase} : {resultado_linha_palavra}\n')
 
-classified_database = classify.apply_features(truth_table_extractor_unique_words_based, stemmed_database)
-print(classified_database)
+  return resultado_linha_palavra
+
+# Base classificada
+base_classificada = classify.apply_features(extrator_linha_nltk, base_simples_sem_stop_words_stemmed)
+
+# Constrói classificador de probabilidade do Naive Bayes
+classificador = NaiveBayesClassifier.train(base_classificada)
+
+# Estatísticas do Classificador
+print(f'As classes existentes na base classificada são {classificador.labels()}\n')
+print(f'As 5 principais características são:')
+classificador.show_most_informative_features(5)
+
+print_space_between_logs()
+
+# Utilizando o classificador
+print(f'Utilizando classificador Naive Bayes para obter a classe\n')
+
+def imprimir_classificacao_frase(frase):
+  frase_tratada = ' '.join(aplicar_stemming(' '.join(remover_stop_words(frase))))
+  linha_nova_frase_tratada = extrator_linha_nltk(frase_tratada)
+  resultado_classe_frase_tratada = classificador.classify(linha_nova_frase_tratada)
+  print(f'Para a frase "{frase}" ("{frase_tratada}") a classe é "{resultado_classe_frase_tratada}"')
+
+
+imprimir_classificacao_frase('estou com muito medo')
+imprimir_classificacao_frase('eu sinto amor por você')
+imprimir_classificacao_frase('hoje é um belo dia')
+
+print_space_between_logs()
+
+# Obtendo valores de distribuição do classificador
+print('Utilizando classificador Naive Bayes para obter os valores de distribuição das classes\n')
+
+def imprimir_distribuicao_frase(frase):
+  frase_tratada = ' '.join(aplicar_stemming(' '.join(remover_stop_words(frase))))
+  linha_nova_frase_tratada = extrator_linha_nltk(frase_tratada)
+  distribuicao = classificador.prob_classify(linha_nova_frase_tratada)
+  print(f'Para a frase "{frase}" ("{frase_tratada}") obtemos a distribuição:\n')
+
+  for classe in distribuicao.samples():
+    print(f'> "{classe}" probabilidade de "{distribuicao.prob(classe)}"')
+
+imprimir_distribuicao_frase('estou com muito medo')
+print_space_between_logs()
+imprimir_distribuicao_frase('eu sinto amor por você')
+print_space_between_logs()
+imprimir_distribuicao_frase('hoje é um belo dia')
+print_space_between_logs()
+imprimir_distribuicao_frase('eu te amo')
+print_space_between_logs()
+imprimir_distribuicao_frase('amor')
