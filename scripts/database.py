@@ -1,8 +1,8 @@
 # Exemplo de base de stop words
-stop_words = [
+stop_words_customizadas = [
   'a', 'agora', 'algum', 'alguma', 'aquele', 'aqueles', 'de', 'deu', 'do', 'e', 'estou', 'esta', 'esta',
   'ir', 'meu', 'muito', 'mesmo', 'no', 'nossa', 'o', 'outro', 'para', 'que', 'sem', 'talvez', 'tem', 'tendo',
-  'tenha', 'teve', 'tive', 'todo', 'um', 'uma', 'umas', 'uns', 'vou'
+  'tenha', 'teve', 'tive', 'todo', 'um', 'uma', 'umas', 'uns', 'vou', 'tão'
 ]
 
 # Base já pré processada (sem acentos)
@@ -29,6 +29,8 @@ base_simples = [
   ('estou com medo do resultado dos meus testes', 'medo')
 ]
 
+# 160 frases de alegria
+# 120 frases de cada uma das outras 5 emoções
 base_treinamento = [
   ('este trabalho e agradável','alegria'),
   ('gosto de ficar no seu aconchego','alegria'),
@@ -570,7 +572,9 @@ base_treinamento = [
   ('cuidado com a tristeza ela e um vicio','tristeza')
 ]
 
-base_teste =[
+# 48 frases de alegria (70% pra treinar)
+# 36 frases das outras emoções (30% pra testar)
+base_teste = [
   ('não precisei pagar o ingresso','alegria'),
   ('se eu ajeitar tudo fica bem','alegria'),
   ('minha fortuna ultrapassa a sua','alegria'),

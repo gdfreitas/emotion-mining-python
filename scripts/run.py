@@ -1,7 +1,7 @@
 from nltk import corpus, stem, FreqDist, metrics, classify, NaiveBayesClassifier
 from nltk.metrics import ConfusionMatrix
 
-from database import base_simples, base_treinamento, stop_words
+from database import base_simples, base_treinamento, base_teste, stop_words_customizadas
 
 def print_space_between_logs():
   print('\n', '-' * 20, '\n')
@@ -98,67 +98,52 @@ def extrair_todas_palavras_base(database):
   Retorna
     (list<string>): Lista de palavras
   """
-  all_words = []
+  todas_palavras = []
 
   for (frase, _emocao) in database:
-    all_words.extend(frase.split())
+    todas_palavras.extend(frase.split())
 
-  return all_words
-
-# Método para identificar a frequência de cada palavra da lista do parâmetro
-def find_frequency(words):
-  return FreqDist(words)
+  return todas_palavras
 
 # Método para identificar a frequência de cada palavra da lista do parâmetro
-def find_most_common_words(words, count = 10):
-  """
-  Obtem as palavras mais frequentes
+def obter_frequencia(palavras):
+  return FreqDist(palavras)
 
-  Parâmetros:
-    words (list<string>): Lista de palavras
-    count (number): Numero maximo de palavras a ser exibida (considerando das mais frequentes às menos frequentes)
-
-  Retorna
-    (list<tuple>): Lista de tupla com a palavra e sua frequência
-  """
-  return find_frequency(words).most_common(count)
-
-def find_unique_words(words):
+def obter_palavras_unicas(palavras):
   """
   Obtém as palavras únicas da lista do parâmetro (remove duplicadas)
 
   Parâmetros:
-    words (list<string>): Lista de palavras
+    palavras (list<string>): Lista de palavras
 
   Retorna
     (list<string>): Lista de palavras únicas
   """
-  return find_frequency(words).keys()
+  return obter_frequencia(palavras).keys()
 
-def construir_linha_tabela_probabilidade(unique_words, words):
+def construir_linha_tabela_probabilidade(palavras_unicas, palavras):
   """
-  Monta tabela verdade com suas "colunas" sendo "unique_words" para as palavras em "words"
+  Monta tabela verdade com suas "colunas" sendo "palavras_unicas" para as palavras em "palavras"
 
   Parâmetros:
-    unique_words (list<string>): Lista de palavras únicas
-    words (list<string>): Lista de palavras para verificar verdade na tabela
+    palavras_unicas (list<string>): Lista de palavras únicas
+    palavras (list<string>): Lista de palavras para verificar verdade na tabela
 
   Retorna:
     object: Tabela verdade
   """
-  words_as_set = set(words)
-  unique_words_object = {}
+  palavras_conjunto = set(palavras)
+  palavras_unicas_object = {}
 
-  for word in unique_words:
-    unique_words_object['%s' % word] = (word in words_as_set)
+  for palavra_unica in palavras_unicas:
+    palavras_unicas_object['%s' % palavra_unica] = (palavra_unica in palavras_conjunto)
 
-  return unique_words_object
-
+  return palavras_unicas_object
 
 print_space_between_logs()
 
 stop_words_nltk = corpus.stopwords.words('portuguese')
-stop_words_nltk.extend(['tão', 'vou', 'vai'])
+stop_words_nltk.extend(stop_words_customizadas)
 
 print(f'Carregado conjunto de stop words do NLTK com {len(stop_words_nltk)} palavras em Português')
 
@@ -195,12 +180,12 @@ print_space_between_logs()
 # Estatísticas de palavras sobre a base de dados
 print('Estatísticas de palavras sobre a base de dados\n')
 todas_palavras_base = extrair_todas_palavras_base(base_simples)
-palavras_mais_frequentes_base = find_frequency(todas_palavras_base).most_common(5)
-palavras_unicas_base = find_unique_words(todas_palavras_base)
+palavras_mais_frequentes_base = obter_frequencia(todas_palavras_base).most_common(5)
+palavras_unicas_base = obter_palavras_unicas(todas_palavras_base)
 
 todas_palavras_base_tratada = extrair_todas_palavras_base(base_sem_stop_words_stemmed)
-palavras_mais_frequentes_base_tratada = find_frequency(todas_palavras_base_tratada).most_common(5)
-palavras_unicas_base_tratada = find_unique_words(todas_palavras_base_tratada)
+palavras_mais_frequentes_base_tratada = obter_frequencia(todas_palavras_base_tratada).most_common(5)
+palavras_unicas_base_tratada = obter_palavras_unicas(todas_palavras_base_tratada)
 
 print(f'A base original contém {len(todas_palavras_base)} palavras')
 print(f'Sendo as 5 mais comuns {palavras_mais_frequentes_base}')
@@ -258,7 +243,6 @@ def imprimir_classificacao_frase(frase):
   resultado_classe_frase_tratada = classificador.classify(linha_nova_frase_tratada)
   print(f'Para a frase "{frase}" ("{frase_tratada}") a classe é "{resultado_classe_frase_tratada}"')
 
-
 imprimir_classificacao_frase('estou com muito medo')
 imprimir_classificacao_frase('eu sinto amor por você')
 imprimir_classificacao_frase('hoje é um belo dia')
@@ -286,3 +270,143 @@ print_space_between_logs()
 imprimir_distribuicao_frase('eu te amo')
 print_space_between_logs()
 imprimir_distribuicao_frase('amor')
+
+print_space_between_logs()
+
+# [TREINAMENTO]
+print('[TREINAMENTO] Avaliação do Algorítmo')
+base_treinamento_sem_stop_words = remover_stop_words_base_frase_classe(base_treinamento)
+base_treinamento_sem_stop_words_stemmed = aplicar_stemming_database(base_treinamento_sem_stop_words)
+todas_palavras_base_treinamento_tratada = extrair_todas_palavras_base(base_treinamento_sem_stop_words_stemmed)
+palavras_unicas_base_treinamento_tratada = obter_palavras_unicas(todas_palavras_base_treinamento_tratada)
+# Define método que será utilizado pelo classificador do NLTK para extração montagem da tabela verdade da base inteira
+def extrator_linha_nltk_treinamento(frase):
+  """
+    Obtem uma frase e retorna um objeto de "tabela verdade" indicando true ou false correspondendo
+    a existentica de cada palavra na lista de palavras da base de dados em "palavras_unicas_base_tratada"
+  """
+  palavras_da_frase = frase.split(' ')
+  palavras_unicas_da_frase = set(palavras_da_frase)
+  resultado_linha_palavra = {}
+
+  for palavra_unica_base_treinamento_tratada in palavras_unicas_base_treinamento_tratada:
+    resultado_linha_palavra['%s' % palavra_unica_base_treinamento_tratada] = (palavra_unica_base_treinamento_tratada in palavras_unicas_da_frase)
+
+  return resultado_linha_palavra
+
+base_treinamento_classificada = classify.apply_features(extrator_linha_nltk_treinamento, base_treinamento_sem_stop_words_stemmed)
+classificador_treinamento = NaiveBayesClassifier.train(base_treinamento_classificada)
+print(f'[TREINAMENTO] As classes existentes na base de treinamento são {classificador_treinamento.labels()}\n')
+print(f'[TREINAMENTO] As 10 principais características são:')
+classificador_treinamento.show_most_informative_features(10)
+
+def imprimir_classificacao_frase_treinamento(frase):
+  frase_tratada = ' '.join(aplicar_stemming(' '.join(remover_stop_words(frase))))
+  linha_nova_frase_tratada = extrator_linha_nltk_treinamento(frase_tratada)
+  resultado_classe_frase_tratada = classificador_treinamento.classify(linha_nova_frase_tratada)
+  print(f'[TREINAMENTO] Para a frase "{frase}" ("{frase_tratada}") a classe é "{resultado_classe_frase_tratada}"')
+
+def imprimir_distribuicao_frase_treinamento(frase):
+  frase_tratada = ' '.join(aplicar_stemming(' '.join(remover_stop_words(frase))))
+  linha_nova_frase_tratada = extrator_linha_nltk_treinamento(frase_tratada)
+  distribuicao = classificador_treinamento.prob_classify(linha_nova_frase_tratada)
+  print(f'[TREINAMENTO] Para a frase "{frase}" ("{frase_tratada}") obtemos a distribuição:\n')
+
+  for classe in distribuicao.samples():
+    print(f'> "{classe}" probabilidade de "{distribuicao.prob(classe)}"')
+
+print_space_between_logs()
+
+imprimir_classificacao_frase_treinamento('estou com muito medo')
+imprimir_distribuicao_frase_treinamento('estou com muito medo')
+print_space_between_logs()
+
+# [TESTES]
+print('[TESTES] Avaliação do Algorítmo')
+base_teste_sem_stop_words = remover_stop_words_base_frase_classe(base_teste)
+base_teste_sem_stop_words_stemmed = aplicar_stemming_database(base_teste_sem_stop_words)
+todas_palavras_base_teste_tratada = extrair_todas_palavras_base(base_teste_sem_stop_words_stemmed)
+palavras_unicas_base_teste_tratada = obter_palavras_unicas(todas_palavras_base_teste_tratada)
+# Define método que será utilizado pelo classificador do NLTK para extração montagem da tabela verdade da base inteira
+def extrator_linha_nltk_teste(frase):
+  """
+    Obtem uma frase e retorna um objeto de "tabela verdade" indicando true ou false correspondendo
+    a existentica de cada palavra na lista de palavras da base de dados em "palavras_unicas_base_tratada"
+  """
+  palavras_da_frase = frase.split(' ')
+  palavras_unicas_da_frase = set(palavras_da_frase)
+  resultado_linha_palavra = {}
+
+  for palavra_unica_base_teste_tratada in palavras_unicas_base_teste_tratada:
+    resultado_linha_palavra['%s' % palavra_unica_base_teste_tratada] = (palavra_unica_base_teste_tratada in palavras_unicas_da_frase)
+
+  return resultado_linha_palavra
+
+base_teste_classificada = classify.apply_features(extrator_linha_nltk_teste, base_teste_sem_stop_words_stemmed)
+classificador_teste = NaiveBayesClassifier.train(base_teste_classificada)
+print(f'[TESTES] As classes existentes na base de treinamento são {classificador_teste.labels()}\n')
+print(f'[TESTES] As 10 principais características são:')
+classificador_teste.show_most_informative_features(10)
+
+def imprimir_classificacao_frase_teste(frase):
+  frase_tratada = ' '.join(aplicar_stemming(' '.join(remover_stop_words(frase))))
+  linha_nova_frase_tratada = extrator_linha_nltk_teste(frase_tratada)
+  resultado_classe_frase_tratada = classificador_teste.classify(linha_nova_frase_tratada)
+  print(f'[TESTES] Para a frase "{frase}" ("{frase_tratada}") a classe é "{resultado_classe_frase_tratada}"')
+
+def imprimir_distribuicao_frase_teste(frase):
+  frase_tratada = ' '.join(aplicar_stemming(' '.join(remover_stop_words(frase))))
+  linha_nova_frase_tratada = extrator_linha_nltk_teste(frase_tratada)
+  distribuicao = classificador_teste.prob_classify(linha_nova_frase_tratada)
+  print(f'[TESTES] Para a frase "{frase}" ("{frase_tratada}") obtemos a distribuição:\n')
+
+  for classe in distribuicao.samples():
+    print(f'> "{classe}" probabilidade de "{distribuicao.prob(classe)}"')
+
+print_space_between_logs()
+
+imprimir_classificacao_frase_teste('estou com muito medo')
+imprimir_distribuicao_frase_teste('estou com muito medo')
+print_space_between_logs()
+
+# [AVALIAÇÃO ALGORITMO] Obter precisão (accuracy) da base_teste em cima da base_treinamento
+print(f'(errado) A precisão do classificador de treinamento na sua própria base foi de {classify.accuracy(classificador_treinamento, base_treinamento_classificada)}')
+print_space_between_logs()
+
+print(f'A precisão do classificador de treinamento na base de teste foi de {classify.accuracy(classificador_treinamento, base_teste_classificada)}')
+print_space_between_logs()
+
+# [AVALIAÇÃO ALGORITMO] Obter erros da base_teste em cima da base_treinamento
+def imprimir_erros_classificacao_base_teste():
+  erros_classificacao_teste = []
+  for (frase, classe) in base_teste_classificada:
+    resultado_classificacao = classificador_treinamento.classify(frase)
+    if (resultado_classificacao != classe):
+      erros_classificacao_teste.append((classe, resultado_classificacao))
+
+  for (classe, resultado_classificacao) in erros_classificacao_teste:
+    print(f'> Era "{classe}" porém classificou como "{resultado_classificacao}"')
+
+# imprimir_erros_classificacao_base_teste()
+
+print_space_between_logs()
+
+# [AVALIAÇÃO ALGORITMO] Construir matriz de confusão
+print('Construindo a Matriz de Confusão\n')
+# sequencia_classes_esperadas = 'alegria alegria alegria alegria medo medo surpresa surpresa'.split()
+# sequencia_palavras_obtidas = 'alegria alegria medo surpresa medo medo medo surpresa'.split()
+
+def imprimir_matriz_confusao_base_teste():
+  sequencia_classes_esperadas = []
+  sequencia_palavras_obtidas = []
+
+  for (frase, classe) in base_teste_classificada:
+    sequencia_classes_esperadas.append(classe)
+
+    resultado_classificacao = classificador_treinamento.classify(frase)
+    sequencia_palavras_obtidas.append(resultado_classificacao)
+
+  matriz_cofusao = ConfusionMatrix(sequencia_classes_esperadas, sequencia_palavras_obtidas)
+  print(matriz_cofusao)
+
+imprimir_matriz_confusao_base_teste()

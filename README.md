@@ -245,13 +245,18 @@ Exemplo em [./docs/naive_bayes.md](./docs/naive_bayes.md)
 
 Exemplos práticos em no diretório [`./scripts`](`./scripts`)
 
-<!-- ## Avaliação do algoritmo
+## Avaliação do algoritmo
 
-Características para se levar em consideração antes do uso deste algorítmo:
+- Base de dados de teste
+- Base de dados de treinamento (bem maior que a de testes)
+
+Ambas já possuem registros classificados, onde serão aplicados cada registro da base de teste num algoritmo da base de treinamento, e os erros e acertos serão medidos. É importante que os **registros das bases sejam diferentes**, para não influenciar no teste do algoritmo, um cenário de exemplo é um professor passar 10 questões no quadro para revisão um dia antes da prova, e no dia da prova, passar as mesmas 10 questões, isso não irá de fato medir o conhecimento.
+
+### Características para se levar em consideração antes do uso
 
 1. Cenário
 2. Número de classes (com as 6 emoções, o algoritmo alcançou acerto de 39%)
-3. "zero-rules" dependendo da aplicação este método é mais aplicável (classifica todas as frases com base na classe mais utilizada) -->
+3. "zero-rules" dependendo da aplicação este método é mais aplicável (classifica todas as frases com base na classe mais utilizada)
 
 ## Referências
 
