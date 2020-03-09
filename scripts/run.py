@@ -1,7 +1,7 @@
 from nltk import corpus, stem, FreqDist, metrics, classify, NaiveBayesClassifier
 from nltk.metrics import ConfusionMatrix
 
-from database import base_simples, base_treinamento,stop_words
+from database import base_simples, base_treinamento, stop_words
 
 def print_space_between_logs():
   print('\n', '-' * 20, '\n')
@@ -175,36 +175,36 @@ print(f'A frase "{frase_simples}" aplicando stemming fica {aplicar_stemming(fras
 
 print_space_between_logs()
 
-# Base simples (frase, classe) original
-print('Base simples (frase, classe) original: \n')
+# Base (frase, classe) original
+print('Base (frase, classe) original: \n')
 imprimir_base_frase_classe(base_simples)
 print_space_between_logs()
 
-# Base simples (frase, classe) sem stop words
-print('Base simples (frase, classe) sem stop words: \n')
-base_simples_sem_stop_words = remover_stop_words_base_frase_classe(base_simples)
-imprimir_base_frase_classe(base_simples_sem_stop_words)
+# Base (frase, classe) sem stop words
+print('Base (frase, classe) sem stop words: \n')
+base_sem_stop_words = remover_stop_words_base_frase_classe(base_simples)
+imprimir_base_frase_classe(base_sem_stop_words)
 print_space_between_logs()
 
-# Base simples (frase, classe) sem stop words e com stemming aplicado
-print('Base simples (frase, classe) sem stop words e com stemming aplicado: \n')
-base_simples_sem_stop_words_stemmed = aplicar_stemming_database(base_simples_sem_stop_words)
-imprimir_base_frase_classe(base_simples_sem_stop_words_stemmed)
+# Base (frase, classe) sem stop words e com stemming aplicado
+print('Base (frase, classe) sem stop words e com stemming aplicado: \n')
+base_sem_stop_words_stemmed = aplicar_stemming_database(base_sem_stop_words)
+imprimir_base_frase_classe(base_sem_stop_words_stemmed)
 print_space_between_logs()
 
 # Estatísticas de palavras sobre a base de dados
 print('Estatísticas de palavras sobre a base de dados\n')
-todas_palavras_base_simples = extrair_todas_palavras_base(base_simples)
-palavras_mais_frequentes_base_simples = find_frequency(todas_palavras_base_simples).most_common(5)
-palavras_unicas_base_simples = find_unique_words(todas_palavras_base_simples)
+todas_palavras_base = extrair_todas_palavras_base(base_simples)
+palavras_mais_frequentes_base = find_frequency(todas_palavras_base).most_common(5)
+palavras_unicas_base = find_unique_words(todas_palavras_base)
 
-todas_palavras_base_tratada = extrair_todas_palavras_base(base_simples_sem_stop_words_stemmed)
+todas_palavras_base_tratada = extrair_todas_palavras_base(base_sem_stop_words_stemmed)
 palavras_mais_frequentes_base_tratada = find_frequency(todas_palavras_base_tratada).most_common(5)
 palavras_unicas_base_tratada = find_unique_words(todas_palavras_base_tratada)
 
-print(f'A base original contém {len(todas_palavras_base_simples)} palavras')
-print(f'Sendo as 5 mais comuns {palavras_mais_frequentes_base_simples}')
-print(f'Removendo duplicadas, temos {len(palavras_unicas_base_simples)} palavras únicas')
+print(f'A base original contém {len(todas_palavras_base)} palavras')
+print(f'Sendo as 5 mais comuns {palavras_mais_frequentes_base}')
+print(f'Removendo duplicadas, temos {len(palavras_unicas_base)} palavras únicas')
 
 print(f'\nA base tratada contém {len(todas_palavras_base_tratada)} palavras')
 print(f'Sendo as 5 mais comuns {palavras_mais_frequentes_base_tratada}')
@@ -237,7 +237,7 @@ def extrator_linha_nltk(frase):
   return resultado_linha_palavra
 
 # Base classificada
-base_classificada = classify.apply_features(extrator_linha_nltk, base_simples_sem_stop_words_stemmed)
+base_classificada = classify.apply_features(extrator_linha_nltk, base_sem_stop_words_stemmed)
 
 # Constrói classificador de probabilidade do Naive Bayes
 classificador = NaiveBayesClassifier.train(base_classificada)
